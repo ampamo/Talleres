@@ -1,0 +1,56 @@
+/*global describe, it, before */
+
+"use strict";
+
+var buster = require("buster");
+var RUList = require("../lib/RUList");
+
+buster.spec.expose();
+var expect = buster.expect;
+
+describe("Recently-Used List", function() {
+    before(function() {
+        this.list = new RUList();
+    });
+
+    it("is initially empty", function() {
+        expect(this.list.length).toEqual(0);
+    });
+
+    it("adds items in reverse order", function() {
+        this.list.add('one');
+        this.list.add('two');
+
+        expect(this.list.get(0)).toEqual('two');
+    });
+
+    it("save only ten items", function () {
+        var until = 20;
+        for(var i = 0; i < until; i++) {
+            this.list.add('Item ' + (i + 1));
+        }
+        expect(this.list.length).toEqual(10);
+        expect(this.list.get(0)).toEqual('Item ' + until);
+    });
+
+    it("Re-Order list", function () {
+        this.list.add('item1');
+        this.list.add('item2');
+        this.list.add('item1');
+
+        expect(this.list.get(0)).toEqual('item1');
+        expect(this.list.get(this.list.length - 1)).toEqual('item2');
+        expect(this.list.length).toEqual(2);
+
+        this.list.add('item3');
+        this.list.add('item4');
+        this.list.add('item2');
+
+        expect(this.list.get(0)).toEqual('item2');
+        expect(this.list.get(1)).toEqual('item4');
+        expect(this.list.get(2)).toEqual('item3');
+        expect(this.list.get(3)).toEqual('item1');
+
+    })
+
+});
